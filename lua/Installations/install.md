@@ -19,7 +19,7 @@ sudo install lazygit -D -t /usr/local/bin/
 
 # fd-find and ripgrep
 
-sudo nala update && nala apt install ripgrep fd-find findutils -y
+sudo nala update && sudo nala install ripgrep fd-find findutils -y
 
 # fint fi installed
 
