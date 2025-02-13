@@ -31,7 +31,7 @@ return {
           on_attach = function(client, bufnr)
             -- Custom keybindings for HTML
           end,
-        }, -- HTML
+        },
         cssls = {}, -- CSS
         tsserver = {}, -- JavaScript/TypeScript
         tailwindcss = {}, -- Tailwind CSS
@@ -39,25 +39,57 @@ return {
     },
   },
 
-  -- ESLint for JavaScript
+  -- ESLint LSP for JavaScript
   {
-    "jose-elias-alvarez/null-ls.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    opts = function()
-      local null_ls = require("null-ls")
-      return {
-        sources = {
-          null_ls.builtins.diagnostics.eslint_d, -- ESLint for diagnostics
-          null_ls.builtins.formatting.eslint_d, -- ESLint for formatting
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        eslint = {
+          filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "php", "rgvp" }, -- Add PHP and .rgvp files
+          on_attach = function(client, bufnr)
+            -- Custom keybindings for ESLint
+            vim.api.nvim_buf_set_keymap(
+              bufnr,
+              "n",
+              "<leader>cf",
+              "<cmd>EslintFixAll<CR>",
+              { noremap = true, silent = true }
+            )
+          end,
         },
-        on_attach = function(client, bufnr)
-          -- Attach ESLint to PHP and .rgvp files
-          if vim.bo[bufnr].filetype == "php" or vim.bo[bufnr].filetype == "rgvp" then
-            null_ls.enable({ bufnr = bufnr })
-          end
-        end,
-      }
-    end,
+      },
+    },
+  },
+
+  -- Prettierd for formatting
+  {
+    "stevearc/conform.nvim", -- A lightweight formatter plugin
+    opts = {
+      formatters_by_ft = {
+        javascript = { "prettierd" },
+        javascriptreact = { "prettierd" },
+        typescript = { "prettierd" },
+        typescriptreact = { "prettierd" },
+        html = { "prettierd" },
+        css = { "prettierd" },
+      },
+      format_on_save = false, -- Disable format on save (use manual formatting)
+    },
+  },
+
+  -- TypeScript LSP
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        tsserver = {
+          cmd = { "typescript-language-server", "--stdio" }, -- Use the correct binary
+          on_attach = function(client, bufnr)
+            -- Custom keybindings for TypeScript
+          end,
+        },
+      },
+    },
   },
 
   -- React (optional)
@@ -85,6 +117,21 @@ return {
         "javascript", -- JavaScript
         "typescript", -- TypeScript
         "tsx", -- TSX (React)
+      },
+    },
+  },
+
+  -- Emmet LSP for HTML completions in PHP and .rgvp files
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        emmet_ls = {
+          filetypes = { "html", "php", "rgvp" }, -- Add PHP and .rgvp files
+          on_attach = function(client, bufnr)
+            -- Custom keybindings for Emmet
+          end,
+        },
       },
     },
   },
